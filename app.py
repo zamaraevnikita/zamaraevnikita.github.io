@@ -11,7 +11,7 @@ app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Replace this with your actual reCAPTCHA site key
-RECAPTCHA_SITE_KEY = '6LfGpJklAAAAAPSlBOvdF8qNPYgmSQVMhPULgBT2'
+RECAPTCHA_SITE_KEY = '6LcxL7QlAAAAACP8hZl4vUEnI4MMoEvxRvdQwtp6'
 
 # Image resizing endpoint
 @app.route('/contrast', methods=['POST'])
@@ -33,7 +33,7 @@ def contrast():
     if not recaptcha_response:
         abort(400, 'reCAPTCHA verification failed')
     payload = {
-        'secret': '6LfGpJklAAAAAGcQWEdWQ00a7WQCUuqxJXagrIjz',  # Replace this with your actual reCAPTCHA secret key
+        'secret': '6LcxL7QlAAAAADMFY2AOZPikykQcEkeDWsxPrsaf',  # Replace this with your actual reCAPTCHA secret key
         'response': recaptcha_response
     }
     response = requests.post('https://www.google.com/recaptcha/api/siteverify', payload).json()
