@@ -38,11 +38,17 @@ def contrast():
     if not response['success']:
         abort(400, 'reCAPTCHA verification failed')
 
-    # Load the image and apply contrast enhancement
+   # Load the image and resize it
     img = Image.open(file)
+    width, height = img.size
+    scale = float(request.form.get('scale'))  # Get the scale value from the form
+    new_size = (int(width*scale), int(height*scale))
+    img = img.resize(new_size)
+    
+    # Apply contrast enhancement
+    contrast = float(request.form.get('contrast')) # Get the contrast value from the form
     contrasted_img = ImageEnhance.Contrast(img).enhance(contrast)
     
-
     # Calculate color distributions of original and contrasted images
     orig_colors = get_color_distribution(img)
     contrasted_colors = get_color_distribution(contrasted_img)
@@ -59,6 +65,7 @@ def contrast():
     ax2.set_xticklabels([c[1] for c in contrasted_colors], rotation=45)
     ax2.set_title('Contrasted Image')
     plt.tight_layout()
+    
     # Save the plot to a file
     plot_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'plot.png')
     plt.savefig(plot_filename)
