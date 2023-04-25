@@ -13,12 +13,11 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 RECAPTCHA_SITE_KEY = '6LdAg7clAAAAAGB4ggO0_4eLFXPnpfqu_GDohZ8V'   
 
 # Image resizing endpoint
-@app.route('/contrast', methods=['POST'])
-def contrast():
-    # Get the uploaded file and contrast value from the request
+@app.route('/resize', methods=['POST'])
+def resize():
+    # Get the uploaded file and size value from the request
     file = request.files.get('file')
-    contrast = float(request.form.get('contrast'))
-
+    size = tuple(map(int, request.form.get('size').split(',')))
     # Check if a file was uploaded
     if not file:
         abort(400, 'No file was uploaded')
@@ -26,6 +25,7 @@ def contrast():
     # Check if the uploaded file is an image
     if not file.filename.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
         abort(400, 'File is not an image')
+
     # Verify the captcha
     recaptcha_response = request.form.get('g-recaptcha-response')
     if not recaptcha_response:
@@ -38,20 +38,13 @@ def contrast():
     if not response['success']:
         abort(400, 'reCAPTCHA verification failed')
 
-   # Load the image and resize it
+    # Load the image and resize
     img = Image.open(file)
-    width, height = img.size
-    scale = float(request.form.get('scale'))  # Get the scale value from the form
-    new_size = (int(width*scale), int(height*scale))
-    img = img.resize(new_size)
-    
-    # Apply contrast enhancement
-    contrast = float(request.form.get('contrast')) # Get the contrast value from the form
-    contrasted_img = ImageEnhance.Contrast(img).enhance(contrast)
-    
-    # Calculate color distributions of original and contrasted images
+    resized_img = img.resize(size)
+
+    # Calculate color distributions of original and resized images
     orig_colors = get_color_distribution(img)
-    contrasted_colors = get_color_distribution(contrasted_img)
+    resized_colors = get_color_distribution(resized_img)
 
     # Plot color distributions as bar graphs
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
@@ -60,18 +53,18 @@ def contrast():
     ax1.set_xticks(np.arange(len(orig_colors)))
     ax1.set_xticklabels([c[1] for c in orig_colors], rotation=45)
     ax1.set_title('Original Image')
-    ax2.bar(np.arange(len(contrasted_colors)), [c[0]/255 for c in contrasted_colors], color=[tuple(np.array(c[1])/255) for c in contrasted_colors])
-    ax2.set_xticks(np.arange(len(contrasted_colors)))
-    ax2.set_xticklabels([c[1] for c in contrasted_colors], rotation=45)
-    ax2.set_title('Contrasted Image')
+    ax2.bar(np.arange(len(resized_colors)), [c[0]/255 for c in resized_colors], color=[tuple(np.array(c[1])/255) for c in resized_colors])
+    ax2.set_xticks(np.arange(len(resized_colors)))
+    ax2.set_xticklabels([c[1] for c in resized_colors], rotation=45)
+    ax2.set_title('Resized Image')
     plt.tight_layout()
-    
+
     # Save the plot to a file
     plot_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'plot.png')
     plt.savefig(plot_filename)
-    # Save the contrasted image to a file
-    contrasted_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'contrasted.png')
-    contrasted_img.save(contrasted_filename)  
+    # Save the resized image to a file
+    resized_filename = os.path.join(app.config['UPLOAD_FOLDER'], 'resized.png')
+    resized_img.save(resized_filename)  
     orig_filename = os.path.join(app.config['UPLOAD_FOLDER'],'orig.png')
     img.save(orig_filename)
     # Render the result page
