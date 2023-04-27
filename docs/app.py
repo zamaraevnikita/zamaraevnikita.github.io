@@ -82,7 +82,7 @@ def contrast():
 # Home page
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html')
+    return render_template('index.html', sitekey=RECAPTCHA_SITE_KEY)
 
 # Utility function to get color distribution of an image
 def get_color_distribution(img):
