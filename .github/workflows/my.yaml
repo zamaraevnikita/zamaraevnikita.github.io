@@ -1,26 +1,23 @@
-# имя, отображаемое в интерфейсе
 name: 'test my project'
-on: [push] # список событий, на которые запускается действие
-jobs: # список работ, которые будут производиться (каждая работа будет выводиться отдельно)
-  checks: # имя работы сhecks
-   runs-on: ubuntu-latest # на какой машине делать работы (можно задать матрицы машин, допустимы Windows и Mac OS)
-   steps: # выполняемые последовательно шаги
-   - uses: actions/checkout@v3
-   - name: Echo hello
-     run: echo "hello world"
-   - name: Install pipenv
-     run: python -m pip install pipenv
-   - name: Set up Python 3.8
-     uses: actions/setup-python@v2
-     with:
-        python-version: 3.8
-
-   - name: Install dependencies
-     run: |
-        python -m pip install --upgrade pip
-         pip install -r requirements.txt
-
-      # Запуск Unicorn
-   - name: Run Unicorn
-     run: |
-          pipenv run gunicorn app:app
+on:
+  push:
+    branches:
+      - main
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+          pipenv install --dev --ignore-pipfile
+      - name: Run app
+        run: |
+          chmod +x st.sh
+          ./st.sh
