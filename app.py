@@ -12,6 +12,10 @@ UPLOAD_FOLDER = './uploads'  # папка для загруженных файл
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
 RECAPTCHA_SITE_KEY = '6LcUO8QlAAAAANzD74FL8FyxjMkktTzbFyf9CNm8'   
 
+@app.route('/')
+def hello_world():
+    return 'Hello, world!'
+
 # Image resizing endpoint
 @app.route('/resize', methods=['POST'])
 def resize():
