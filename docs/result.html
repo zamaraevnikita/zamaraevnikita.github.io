@@ -16,7 +16,7 @@
     <h2>Original Image: {{ orig }}</h2>
     <img src="{{ url_for('uploaded_file', filename='orig.png') }}" alt="Original Image">
     <h2>Contrast-Adjusted Image</h2>
-    <img src="{{ url_for('uploaded_file', filename='resized.png') }}" alt="Contrast-Adjusted Image">
+    <img src="{{ url_for('uploaded_file', filename='resized.png') }}" alt="resized Image">
     <h2>Color Distribution</h2>
     <img src="{{ url_for('uploaded_file', filename='plot.png') }}" alt="Color Distribution">
     <button onclick="history.back()">Go back</button>

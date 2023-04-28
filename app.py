@@ -10,15 +10,14 @@ app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER 
-RECAPTCHA_SITE_KEY = '6LflZcIlAAAAAM9QWLCLL4CiJRX_GImwHuDJMYWb'   
+RECAPTCHA_SITE_KEY = '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI'   
 
 # Image resizing endpoint
 @app.route('/resize', methods=['POST'])
 def resize():
     # Get the uploaded file and size value from the request
     file = request.files.get('file')
-    width = int(request.form.get('width'))
-    height = int(request.form.get('height'))
+    resize = float(request.form.get('resize'))
 
     # Check if a file was uploaded
     if not file:
@@ -32,7 +31,7 @@ def resize():
     if not recaptcha_response:
         abort(400, 'reCAPTCHA verification failed')
     payload = {
-        'secret': '6LflZcIlAAAAAP7JohU58ByBJVHdpzlptYt6vDIz',
+        'secret': '6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe',
         'response': recaptcha_response
     }
     response = requests.post('https://www.google.com/recaptcha/api/siteverify', payload).json()
@@ -41,7 +40,11 @@ def resize():
 
     # Load the image and resize
     img = Image.open(file)
-    resized_img = img.resize((width, height))
+    width, height = img.size
+    new_size = (int(width * resize), int(height * resize))
+    
+    resized_img = img.resize(new_size)
+
 
     # Calculate color distributions of original and resized images
     orig_colors = get_color_distribution(img)
@@ -57,7 +60,7 @@ def resize():
     ax2.bar(np.arange(len(resized_colors)), [c[0]/255 for c in resized_colors], color=[tuple(np.array(c[1])/255) for c in resized_colors])
     ax2.set_xticks(np.arange(len(resized_colors)))
     ax2.set_xticklabels([c[1] for c in resized_colors], rotation=45)
-    ax2.set_title('Resized Image')
+    ax2.set_title('resized Image')
     plt.tight_layout()
 
     # Save the plot to a file
