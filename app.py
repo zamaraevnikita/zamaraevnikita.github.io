@@ -5,7 +5,7 @@ from PIL import Image, ImageEnhance
 import requests
 import os
 import base64
-
+#
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024  # 1 MB limit for uploaded files
 UPLOAD_FOLDER = './uploads'  # папка для загруженных файлов
