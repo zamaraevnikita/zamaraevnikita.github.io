@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
 import matplotlib.pyplot as plt
 import numpy as np
+import cv2
 from PIL import Image, ImageEnhance
 import requests
 import os
@@ -43,11 +44,13 @@ def resize():
         abort(400, 'reCAPTCHA verification failed')
 
     # Load the image and resize
-    img = Image.open(file)
-    width, height = img.size
-    new_size = (int(width * resize), int(height * resize))
-    
-    resized_img = img.resize(new_size)
+#     img = Image.open(file)
+#     width, height = img.size
+#     new_size = (int(width * resize), int(height * resize))
+    img = cv2.imread(file)
+    noise = np.zeros(img.shape, np.uint8)
+    cv2.randn(noise, 0, 25)  # 25 is the standard deviation
+    new_size = cv2.add(img, noise)
 
 
     # Calculate color distributions of original and resized images
