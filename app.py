@@ -43,7 +43,7 @@ def resize():
     if not response['success']:
         abort(400, 'reCAPTCHA verification failed')
 
-    Load the image and resize
+#     Load the image and resize
     img = Image.open(file)
     width, height = img.size
     new_size = (int(width * resize), int(height * resize))
