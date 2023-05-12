@@ -43,14 +43,11 @@ def resize():
     if not response['success']:
         abort(400, 'reCAPTCHA verification failed')
 
-    # Load the image and resize
-#     img = Image.open(file)
-#     width, height = img.size
-#     new_size = (int(width * resize), int(height * resize))
-    img = cv2.imread(file)
-    noise = np.zeros(img.shape, np.uint8)
-    cv2.randn(noise, 0, 25)  # 25 is the standard deviation
-    new_size = cv2.add(img, noise)
+    Load the image and resize
+    img = Image.open(file)
+    width, height = img.size
+    new_size = (int(width * resize), int(height * resize))
+
 
 
     # Calculate color distributions of original and resized images
