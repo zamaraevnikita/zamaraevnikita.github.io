@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, abort, send_from_directory
 import matplotlib.pyplot as plt
 import numpy as np
-import cv2
+
 from PIL import Image, ImageEnhance
 import requests
 import os
